@@ -1,5 +1,6 @@
 package com.example.couriersystem
 
+import android.content.Intent
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -10,6 +11,7 @@ import okio.ByteString
 object Websocket {
     private var webSocket: WebSocket? = null
     private val client = OkHttpClient()
+    private val TAG = "Websocket"
 
     fun connect(url: String) {
         val request = Request.Builder().url(url).build()
@@ -20,6 +22,42 @@ object Websocket {
 
             override fun onMessage(webSocket: WebSocket, text: String) {
                 println("收到服务器消息：$text")
+                if(text==Msg.LOGIN_SUCCESS){
+                    println("登录成功")
+                    //发送登录成功广播
+                    val intent = Intent("com.example.couriersystem.LOGIN_SUCCESS")
+                    MyApplication.getInstance().getContext().sendBroadcast(intent)
+                }else if(text==Msg.LOGIN_FAIL){
+                    println("登录失败")
+                    //发送登录失败广播
+                    val intent = Intent("com.example.couriersystem.LOGIN_FAIL")
+                    MyApplication.getInstance().getContext().sendBroadcast(intent)
+                } else if(text==Msg.ID_EXISTED){
+                    //账号存在
+                    println("已经存在该账号")
+                    //发送提醒账号存在广播
+                    val intent = Intent("com.example.couriersystem.ID_EXISTED")
+                    MyApplication.getInstance().getContext().sendBroadcast(intent)
+                } else if(text==Msg.ENROLL_SUCCESS){
+                    //发送注册成功广播
+                    println("注册成功")
+                    val intent = Intent("com.example.couriersystem.ENROLL_SUCCESS")
+                    MyApplication.getInstance().getContext().sendBroadcast(intent)
+                } else if("Addressee:" in text){
+                    val message=text.split(":")
+                    Addressee.Id=message[1]
+                    Addressee.Name=message[2]
+                    Addressee.Phone=message[3]
+                    println("收件人信息获取成功")
+                }else if("Courier:" in text){
+                    val message=text.split(":")
+                    Courier.Id=message[1]
+                    Courier.Name=message[2]
+                    Courier.Phone=message[3]
+                    println("快递员信息获取成功")
+                }else{
+                    println("$text")
+                }
             }
 
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
@@ -45,5 +83,5 @@ object Websocket {
         webSocket?.close(NORMAL_CLOSURE_STATUS, null)
     }
 
-    private const val NORMAL_CLOSURE_STATUS = 1000
+    private val NORMAL_CLOSURE_STATUS = 1000
 }

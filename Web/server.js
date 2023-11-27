@@ -1,5 +1,15 @@
 const ws = require("nodejs-websocket"); //引入依赖包
-const POST = 8080; //定义端口
+const PORT = 8080; //定义端口
+
+//定义返回状态信息
+const LOGIN_SUCCESS = "1";
+const LOGIN_FAIL = "2";
+const ENROLL_SUCCESS = "3";
+const ENROLL_FAIL = "4";
+const GETINFO_SUCCESS = "5";
+const GETINFO_FAIL = "6";
+const ID_EXISTED = "7";
+const ID_INEXIST = "8";
 
 var mysql = require("mysql");
 var connection = mysql.createConnection({
@@ -31,8 +41,107 @@ const server = ws.createServer((connect) => {
     connect.on("text", (data) => {
         // 每当接受到用户请求事件，这个回调函数就会被触发。
         console.log("Received " + data);
+        var receivedMsg = data.split(":");
 
-        // sendText/send 方法：接受到请求后，响应一个数据给用户。因为是connect调用，所以只给当前connet对应的用户发送，如果需要给所有用户发送（广播），需要connections这个数组
+        if (receivedMsg[0] == "courierFindPwdById") {
+            //快递员账号查询对应密码
+            connection.query("select * from courier where Id=?", receivedMsg[1], (err, result) => {
+                if (err) {
+                    console.log("查询出错" + err);
+                    connect.send("查询出错");
+                } else {
+                    console.log(result[0]);
+                    if (result[0] == null) {
+                        console.log("账号不存在");
+                        connect.sendText(LOGIN_FAIL);
+                    } else {
+                        if (result[0].Password == receivedMsg[2]) {
+                            console.log("账号密码验证成功");
+                            connect.sendText(LOGIN_SUCCESS);
+                            connect.sendText("Courier:" + result[0].Id + ":" + result[0].Name + ":" + result[0].Phone);
+                        } else {
+                            console.log("账号密码验证失败");
+                            connect.sendText(LOGIN_FAIL);
+                        }
+                    }
+                }
+            });
+        } else if (receivedMsg[0] == "addresseeFindPwdById") {
+            //收件人账号查询对应密码
+            connection.query("select * from addressee where Id=?", receivedMsg[1], (err, result) => {
+                if (err) {
+                    console.log("查询出错" + err);
+                    connect.send("查询出错");
+                } else {
+                    console.log(result[0]);
+                    if (result[0] == null) {
+                        console.log("账号不存在");
+                        connect.sendText(LOGIN_FAIL);
+                    } else {
+                        if (result[0].Password == receivedMsg[2]) {
+                            console.log("账号密码验证成功");
+                            connect.sendText(LOGIN_SUCCESS);
+                            connect.sendText("Addressee:" + result[0].Id + ":" + result[0].Name + ":" + result[0].Phone);
+                        } else {
+                            console.log("账号密码验证失败");
+                            connect.sendText(LOGIN_FAIL);
+                        }
+                    }
+                }
+            });
+        } else if (receivedMsg[0] == "courierFindId") {
+            //快递员账号查询是否存在
+            connection.query("select * from courier where ID=?", receivedMsg[1], (err, result) => {
+                if (err) {
+                    console.log("查询出错" + err);
+                    connect.send("查询出错");
+                } else {
+                    console.log(result[0]);
+                    if (result[0] != null) {
+                        console.log("已存在该账号");
+                        connect.sendText(ID_EXISTED);
+                    } else {
+                        console.log("注册成功");
+                        connect.sendText(ENROLL_SUCCESS);
+                        connection.query("insert into courier values (?,?,?,?)", [receivedMsg[1], receivedMsg[2], receivedMsg[3], receivedMsg[4]], (err, result) => {
+                            if (err) {
+                                console.log("插入出错" + err);
+                                connect.send("插入出错");
+                            } else {
+                                console.log("插入成功");
+                                connect.send("插入成功");
+                            }
+                        });
+                    }
+                }
+            });
+        } else if (receivedMsg[0] == "addresseeFindId") {
+            //收件人账号查询是否存在
+            connection.query("select * from addressee where ID=?", receivedMsg[1], (err, result) => {
+                if (err) {
+                    console.log("查询出错" + err);
+                    connect.send("查询出错");
+                } else {
+                    console.log(result[0]);
+                    if (result[0] != null) {
+                        console.log("已存在该账号");
+                        connect.sendText(ID_EXISTED);
+                    } else {
+                        console.log("注册成功");
+                        connect.sendText(ENROLL_SUCCESS);
+                        connection.query("insert into addressee values (?,?,?,?)", [receivedMsg[1], receivedMsg[2], receivedMsg[3], receivedMsg[4]], (err, result) => {
+                            if (err) {
+                                console.log("插入出错" + err);
+                                connect.send("插入出错");
+                            } else {
+                                console.log("插入成功");
+                                connect.send("插入成功");
+                            }
+                        });
+                    }
+                }
+            });
+        }
     });
 
     // 连接断开 触发close事件
@@ -48,6 +157,6 @@ const server = ws.createServer((connect) => {
         console.log("连接出现异常");
     });
 });
-server.listen(POST, () => {
-    console.log("webSocket服务启动成功了,监听了端口" + POST);
+server.listen(PORT, () => {
+    console.log("webSocket服务启动成功了,监听了端口" + PORT);
 });

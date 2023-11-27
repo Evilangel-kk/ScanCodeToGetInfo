@@ -9,7 +9,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Websocket.connect("ws://192.168.100.1:8080")
+        Websocket.connect("https://7d2958.r8.vip.cpolar.cn")
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         var intent= Intent(this,LoginActivity::class.java)
@@ -21,5 +21,10 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("user", "addressee")
             startActivity(intent)
         }
+    }
+
+    override fun onDestroy() {
+        Websocket.close()
+        super.onDestroy()
     }
 }

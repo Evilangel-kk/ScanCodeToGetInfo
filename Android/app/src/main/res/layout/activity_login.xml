@@ -9,14 +9,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:gravity="right">
+        android:padding="5dp"
+        android:gravity="left">
         <ImageView
             android:id="@+id/home"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/icon"/>
+            android:src="@drawable/logo"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -65,6 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="3"/>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -99,9 +100,8 @@
                 android:id="@+id/warning"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-20dp"
-                android:layout_marginLeft="10dp"
-                android:paddingBottom="20dp"
+                android:layout_marginTop="-30dp"
+                android:layout_marginLeft="-10dp"
                 android:visibility="invisible"
                 android:text="账号或密码错误"
                 android:textColor="@color/red"

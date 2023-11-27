@@ -9,14 +9,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:gravity="right">
+        android:padding="5dp"
+        android:gravity="left">
         <ImageView
             android:id="@+id/home"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/icon"/>
+            android:src="@drawable/logo"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,8 +45,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
                 android:gravity="center"
@@ -57,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="账号:"
-                    android:textSize="30sp"
+                    android:textSize="20sp"
                     android:textColor="@color/black"/>
                 <EditText
                     android:id="@+id/userId"
@@ -65,11 +63,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="3"/>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
                 android:gravity="center"
@@ -80,7 +77,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:text="密码:"
-                    android:textSize="30sp"
+                    android:textSize="20sp"
                     android:textColor="@color/black"/>
                 <EditText
                     android:id="@+id/userPwd"
@@ -98,8 +95,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
                 android:gravity="center"
@@ -108,9 +103,9 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
+                    android:layout_weight="4"
                     android:text="确认密码:"
-                    android:textSize="30sp"
+                    android:textSize="20sp"
                     android:textColor="@color/black"/>
                 <EditText
                     android:id="@+id/userPwdConfirm"
@@ -125,21 +120,85 @@
                     android:layout_weight="1"
                     android:src="@drawable/close_eye"/>
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="昵称:"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"/>
+                <EditText
+                    android:id="@+id/userName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="电话:"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"/>
+                <EditText
+                    android:id="@+id/userPhone"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"/>
+            </LinearLayout>
+
             <TextView
-                android:id="@+id/warning"
+                android:id="@+id/warningPwd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-40dp"
                 android:layout_marginLeft="10dp"
-                android:paddingBottom="10dp"
+                android:layout_marginTop="0dp"
                 android:visibility="invisible"
                 android:text="两次输入密码不一致"
+                android:textColor="@color/red"
+                android:textSize="20sp" />
+            <TextView
+                android:id="@+id/warningId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-30dp"
+                android:layout_marginLeft="-10dp"
+                android:visibility="invisible"
+                android:text="该账号已经存在"
+                android:textColor="@color/red"
+                android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/warningNull"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-30dp"
+                android:layout_marginLeft="0dp"
+                android:visibility="invisible"
+                android:text="所有信息不能为空"
                 android:textColor="@color/red"
                 android:textSize="20sp"/>
             <TextView
                 android:id="@+id/toLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingTop="10dp"
                 android:text="已有账号？去登录"
                 android:textSize="20sp"
                 android:textColor="@color/blue"/>
