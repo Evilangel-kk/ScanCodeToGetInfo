@@ -15,6 +15,10 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding= ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.home.setOnClickListener{
+            val intent = Intent(this,MainActivity::class.java)
+            startActivity(intent)
+        }
         binding.toEnroll.setOnClickListener {
             val intent=Intent(this,EnrollActivity::class.java)
             startActivity(intent)
@@ -29,6 +33,10 @@ class LoginActivity : AppCompatActivity() {
                 binding.userPwd.inputType=InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 binding.eye.setImageDrawable(resources.getDrawable(R.drawable.close_eye))
             }
+        }
+        //点击确认
+        binding.confirm.setOnClickListener {
+            //查询账号对应密码
         }
     }
 }

@@ -9,6 +9,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Websocket.connect("ws://192.168.100.1:8080")
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         var intent= Intent(this,LoginActivity::class.java)

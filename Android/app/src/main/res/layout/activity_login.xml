@@ -12,6 +12,7 @@
         android:padding="20dp"
         android:gravity="right">
         <ImageView
+            android:id="@+id/home"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:scaleType="fitCenter"
