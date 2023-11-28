@@ -58,6 +58,7 @@ const server = ws.createServer((connect) => {
                         if (result[0].Password == receivedMsg[2]) {
                             console.log("账号密码验证成功");
                             connect.sendText(LOGIN_SUCCESS);
+                            generateQRCodeAndSave(result[0]);
                             connect.sendText("Courier:" + result[0].Id + ":" + result[0].Name + ":" + result[0].Phone);
                         } else {
                             console.log("账号密码验证失败");
@@ -160,3 +161,23 @@ const server = ws.createServer((connect) => {
 server.listen(PORT, () => {
     console.log("webSocket服务启动成功了,监听了端口" + PORT);
 });
+
+// 引入 qrcode 模块和 fs 模块
+const qr = require("qrcode");
+const fs = require("fs");
+
+// 生成二维码并保存到本地
+function generateQRCodeAndSave(user) {
+    const url = `${user.Id}:${user.Password}:${user.Name}:${user.Phone}`; // 替换为你实际使用的 URL
+    qr.toFile(
+        `../CodeImg/${user.Id}.png`, // 保存路径
+        url, { margin: 1, width: 256, height: 256 }, // 二维码配置
+        (err) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(`二维码生成成功并保存到 ../CodeImg/${user.Id}.png`);
+            }
+        }
+    );
+}
