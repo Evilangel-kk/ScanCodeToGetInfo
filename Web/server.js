@@ -10,7 +10,8 @@ const GETINFO_SUCCESS = "5";
 const GETINFO_FAIL = "6";
 const ID_EXISTED = "7";
 const ID_INEXIST = "8";
-
+const ORDERID_EXISTED = "9"
+const ADDORDER_SUCCESS = "10"
 var mysql = require("mysql");
 var connection = mysql.createConnection({
     host: "localhost",
@@ -58,7 +59,6 @@ const server = ws.createServer((connect) => {
                         if (result[0].Password == receivedMsg[2]) {
                             console.log("账号密码验证成功");
                             connect.sendText(LOGIN_SUCCESS);
-                            generateQRCodeAndSave(result[0]);
                             connect.sendText("Courier:" + result[0].Id + ":" + result[0].Name + ":" + result[0].Phone);
                         } else {
                             console.log("账号密码验证失败");
@@ -142,6 +142,30 @@ const server = ws.createServer((connect) => {
                     }
                 }
             });
+        } else if (receivedMsg[0] == "AddOrder") {
+            connection.query("select * from orders where ID=?", receivedMsg[1], (err, result) => {
+                if (err) {
+                    console.log("查询出错" + err);
+                    connect.send("查询出错");
+                } else {
+                    if (result[0] != null) {
+                        console.log("已存在该订单号");
+                        connect.sendText(ORDERID_EXISTED);
+                    } else {
+                        console.log("添加成功");
+                        connect.sendText(ADDORDER_SUCCESS);
+                        connection.query("insert into orders values (?,?,?,?,?,?)", [receivedMsg[1], receivedMsg[2], receivedMsg[3], receivedMsg[4], receivedMsg[5], null], (err, result) => {
+                            if (err) {
+                                console.log("添加出错" + err);
+                                connect.send("添加出错");
+                            } else {
+                                console.log("添加成功");
+                                connect.send("添加成功");
+                            }
+                        })
+                    }
+                }
+            })
         }
     });
 
@@ -167,17 +191,29 @@ const qr = require("qrcode");
 const fs = require("fs");
 
 // 生成二维码并保存到本地
-function generateQRCodeAndSave(user) {
-    const url = `码上识件:${user.Id}:${user.Password}:${user.Name}:${user.Phone}`; // 替换为你实际使用的 URL
+function generateQRCodeAndSave(order) {
+    console.log(order);
+    const url = `码上识件:${order.Id}:${order.Location}:${order.AddresseeId}:${order.AddresseeName}:${order.AddresseePhone}:${order.CourierId}`; // 替换为你实际使用的 URL
     qr.toFile(
-        `../CodeImg/${user.Id}.png`, // 保存路径
+        `../CodeImg/${order.Id}.png`, // 保存路径
         url, { margin: 1, width: 256, height: 256 }, // 二维码配置
         (err) => {
             if (err) {
                 console.log(err);
             } else {
-                console.log(`二维码生成成功并保存到 ../CodeImg/${user.Id}.png`);
+                console.log(`二维码生成成功并保存到 ../CodeImg/${order.Id}.png`);
             }
         }
     );
 }
+
+// connection.query("select * from orders", (err, result) => {
+//     var i = 0;
+//     while (result[i]) {
+//         console.log(result[i]);
+//         if (result[i].CourierId != "") {
+//             generateQRCodeAndSave(result[i]);
+//         }
+//         i++;
+//     }
+// });

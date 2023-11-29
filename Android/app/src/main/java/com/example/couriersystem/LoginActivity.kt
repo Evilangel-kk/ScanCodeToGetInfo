@@ -25,6 +25,7 @@ class LoginActivity : AppCompatActivity() {
                 //登陆成功
                 Log.d("MyReceiver", "onReceive: LOGIN_SUCCESS")
                 binding.warning.visibility= View.INVISIBLE
+                Log.d("TAG", user)
                 if(user=="courier"){
                     //跳转快递员操作界面
                     val courierintent=Intent(this@LoginActivity,CourierOperateActivity::class.java)
@@ -34,9 +35,9 @@ class LoginActivity : AppCompatActivity() {
                     val addresseeintent=Intent(this@LoginActivity,AddresseeOperateActivity::class.java)
                     startActivity(addresseeintent)
                 }
-                val successintent = Intent(this@LoginActivity, SuccessActivity::class.java)
-                successintent.putExtra("user",user)
-                startActivity(successintent)
+//                val successintent = Intent(this@LoginActivity, SuccessActivity::class.java)
+//                successintent.putExtra("user",user)
+//                startActivity(successintent)
             }else if(intent.action == "com.example.couriersystem.LOGIN_FAIL"){
                 //登陆失败
                 Log.d("MyReceiver", "onReceive: LOGIN_FAIL")

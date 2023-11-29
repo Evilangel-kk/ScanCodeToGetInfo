@@ -43,19 +43,27 @@ object Websocket {
                     println("注册成功")
                     val intent = Intent("com.example.couriersystem.ENROLL_SUCCESS")
                     MyApplication.getInstance().getContext().sendBroadcast(intent)
+                } else if(text==Msg.ADDORDER_SUCCESS){
+                    println("添加成功")
+                    val intent = Intent("com.example.couriersystem.ADDORDER_SUCCESS")
+                    MyApplication.getInstance().getContext().sendBroadcast(intent)
+                } else if(text==Msg.ORDERID_EXISTED){
+                    println("添加成功")
+                    val intent = Intent("com.example.couriersystem.ORDERID_EXISTED")
+                    MyApplication.getInstance().getContext().sendBroadcast(intent)
                 } else if("Addressee:" in text){
                     val message=text.split(":")
                     Addressee.Id=message[1]
                     Addressee.Name=message[2]
                     Addressee.Phone=message[3]
                     println("收件人信息获取成功")
-                }else if("Courier:" in text){
+                } else if("Courier:" in text){
                     val message=text.split(":")
                     Courier.Id=message[1]
                     Courier.Name=message[2]
                     Courier.Phone=message[3]
                     println("快递员信息获取成功")
-                }else{
+                } else{
                     println("$text")
                 }
             }

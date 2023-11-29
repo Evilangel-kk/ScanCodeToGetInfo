@@ -6,5 +6,7 @@ object Order {
     var Id=""
     var Location=""
     var AddresseeId=""
+    var AddresseeName=""
+    var AddresseePhone=""
     var CourierId=""
 }

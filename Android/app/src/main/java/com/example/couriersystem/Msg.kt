@@ -15,4 +15,6 @@ object Msg {
     val GETINFO_FAIL="6"
     val ID_EXISTED = "7"
     val ID_INEXIST = "8"
+    val ORDERID_EXISTED = "9"
+    val ADDORDER_SUCCESS = "10"
 }
