@@ -28,7 +28,7 @@ class EnrollActivity : AppCompatActivity() {
                 binding.warningId.visibility=View.INVISIBLE
                 binding.warningPwd.visibility=View.INVISIBLE
                 binding.warningNull.visibility=View.INVISIBLE
-                val intent = Intent(this@EnrollActivity, SuccessActivity::class.java)
+                val intent = Intent(this@EnrollActivity, LoginActivity::class.java)
                 intent.putExtra("user",user)
                 startActivity(intent)
             }else if(intent.action == "com.example.couriersystem.ID_EXISTED"){

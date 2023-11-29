@@ -34,6 +34,12 @@
         android:theme="@style/Theme.CourierSystem"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".AddresseeOperateActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CourierOperateActivity"
+            android:exported="false" />
+        <activity
             android:name=".ScanCodeActivity"
             android:exported="false" />
         <activity

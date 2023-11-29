@@ -168,7 +168,7 @@ const fs = require("fs");
 
 // 生成二维码并保存到本地
 function generateQRCodeAndSave(user) {
-    const url = `${user.Id}:${user.Password}:${user.Name}:${user.Phone}`; // 替换为你实际使用的 URL
+    const url = `码上识件:${user.Id}:${user.Password}:${user.Name}:${user.Phone}`; // 替换为你实际使用的 URL
     qr.toFile(
         `../CodeImg/${user.Id}.png`, // 保存路径
         url, { margin: 1, width: 256, height: 256 }, // 二维码配置

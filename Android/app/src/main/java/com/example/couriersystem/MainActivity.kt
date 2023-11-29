@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Websocket.connect("http://f6e9146.r15.vip.cpolar.cn")
+        Websocket.connect("https://16dc7372.r16.vip.cpolar.cn")
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         var intent= Intent(this,LoginActivity::class.java)
