@@ -1,23 +1,50 @@
 package com.example.couriersystem
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.Toast
 import com.example.couriersystem.databinding.ActivityCourierOperateBinding
 import com.google.zxing.integration.android.IntentIntegrator
 
 class CourierOperateActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCourierOperateBinding
+    private lateinit var receiver: MyReceiver
+
+    inner class MyReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == "com.example.couriersystem.COURIER_GET_ORDERS_SUCCESS") {
+                //获取订单成功
+                Log.d("MyReceiver", "onReceive: COURIER_GET_ORDERS_SUCCESS")
+                val intent= Intent(this@CourierOperateActivity,OrderListActivity::class.java)
+                startActivity(intent)
+            }else if(intent.action == "com.example.couriersystem.COURIER_GET_ORDERS_FAIL"){
+                //获取订单失败
+                Log.d("MyReceiver", "onReceive: COURIER_GET_ORDERS_FAIL")
+
+            }
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivityCourierOperateBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // 注册广播
+        val filter = IntentFilter().apply {
+            addAction("com.example.couriersystem.COURIER_GET_ORDERS_SUCCESS")
+            addAction("com.example.couriersystem.COURIER_GET_ORDERS_FAIL")
+        }
+        receiver = MyReceiver()
+        registerReceiver(receiver, filter)
         binding.courierId.text=Courier.Id
         binding.courierName.text=Courier.Name
         binding.allOrders.setOnClickListener {
-            val intent= Intent(this,CourierOrdersActivity::class.java)
-            startActivity(intent)
+            Websocket.send("courierAskAllOrders:"+Courier.Id)
         }
 
         binding.scan.setOnClickListener {
@@ -39,7 +66,7 @@ class CourierOperateActivity : AppCompatActivity() {
             } else {
                 var msg=result.contents.split(":")
                 if(msg[0]=="码上识件"){
-                    if(msg[4]!=Courier.Id){
+                    if(msg[6]!=Courier.Id){
                         Toast.makeText(this, "该件的派送者不是你，你无权查看快递信息", Toast.LENGTH_LONG).show()
                     }else{
                         Order.Id=msg[1]

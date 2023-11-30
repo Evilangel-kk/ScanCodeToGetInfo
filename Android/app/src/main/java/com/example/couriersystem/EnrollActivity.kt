@@ -16,7 +16,6 @@ import com.example.couriersystem.databinding.ActivityEnrollBinding
 
 class EnrollActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEnrollBinding
-    private lateinit var user:String
     private lateinit var receiver: MyReceiver
 
     //    广播接收消息
@@ -29,7 +28,6 @@ class EnrollActivity : AppCompatActivity() {
                 binding.warningPwd.visibility=View.INVISIBLE
                 binding.warningNull.visibility=View.INVISIBLE
                 val intent = Intent(this@EnrollActivity, LoginActivity::class.java)
-                intent.putExtra("user",user)
                 startActivity(intent)
             }else if(intent.action == "com.example.couriersystem.ID_EXISTED"){
                 //账号已经存在
@@ -45,7 +43,6 @@ class EnrollActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding=ActivityEnrollBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        user=intent.getStringExtra("user").toString()
         // 注册广播
         val filter = IntentFilter().apply {
             addAction("com.example.couriersystem.ENROLL_SUCCESS")
@@ -103,7 +100,7 @@ class EnrollActivity : AppCompatActivity() {
                 binding.warningNull.visibility=View.INVISIBLE
                 binding.warningId.visibility=View.INVISIBLE
                 //查询账号是否存在
-                Websocket.send(user+"FindId:"+binding.userId.text.toString()+":"+binding.userPwd.text.toString()+":"+binding.userName.text.toString()+":"+binding.userPhone.text.toString())
+                Websocket.send(User.u+"FindId:"+binding.userId.text.toString()+":"+binding.userPwd.text.toString()+":"+binding.userName.text.toString()+":"+binding.userPhone.text.toString())
             }
         }
     }

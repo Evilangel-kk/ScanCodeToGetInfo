@@ -18,11 +18,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         var intent= Intent(this,LoginActivity::class.java)
         binding.courier.setOnClickListener {
-            intent.putExtra("user","courier")
+            User.u="courier"
             startActivity(intent)
         }
         binding.addressee.setOnClickListener {
-            intent.putExtra("user", "addressee")
+            User.u="addressee"
             startActivity(intent)
         }
     }

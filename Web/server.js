@@ -12,6 +12,15 @@ const ID_EXISTED = "7";
 const ID_INEXIST = "8";
 const ORDERID_EXISTED = "9"
 const ADDORDER_SUCCESS = "10"
+const COURIER_GET_ORDERS_SUCCESS = "11"
+const COURIER_GET_ORDERS_FAIL = "12"
+const ADDRESSEE_GET_ORDERS_SUCCESS = "13"
+const ADDRESSEE_GET_ORDERS_FAIL = "14"
+const NOTFUND_PHONE = "15"
+const FUND_PHONE = "16"
+const FUND_NAME = "17"
+const NOTFUND_NAME = "18"
+
 var mysql = require("mysql");
 var connection = mysql.createConnection({
     host: "localhost",
@@ -163,6 +172,67 @@ const server = ws.createServer((connect) => {
                                 connect.send("添加成功");
                             }
                         })
+                    }
+                }
+            })
+        } else if (receivedMsg[0] == "courierAskAllOrders") {
+            connection.query("select * from orders where CourierId=?", receivedMsg[1], (err, result) => {
+                if (err) {
+                    console.log("查询出错" + err);
+                    connect.send("查询出错");
+                } else {
+                    if (result[0] == null) {
+                        console.log("未查找到订单");
+                        connect.sendText(COURIER_GET_ORDERS_FAIL);
+                    } else {
+                        var text = "courierOrders&"
+                        var i = 0;
+                        while (result[i]) {
+                            text += (result[i].Id + ":" + result[i].Location + ":" + result[i].AddresseeId + ":" + result[i].AddresseeName + ":" + result[i].AddresseePhone + ":" + result[i].CourierId);
+                            text += "&";
+                            i++;
+                        }
+                        text = text.slice(0, -1);
+                        connect.sendText(text);
+                    }
+                }
+            })
+        } else if (receivedMsg[0] == "addresseeAskAllOrders") {
+            connection.query("select * from orders where AddresseeId=?", receivedMsg[1], (err, result) => {
+                if (err) {
+                    console.log("查询出错" + err);
+                    connect.send("查询出错");
+                } else {
+                    if (result[0] == null) {
+                        console.log("未查找到订单");
+                        connect.sendText(ADDRESSEE_GET_ORDERS_FAIL);
+                    } else {
+                        var text = "addresseeOrders&"
+                        var i = 0;
+                        while (result[i]) {
+                            text += (result[i].Id + ":" + result[i].Location + ":" + result[i].AddresseeId + ":" + result[i].AddresseeName + ":" + result[i].AddresseePhone + ":" + result[i].CourierId);
+                            text += "&";
+                            i++;
+                        }
+                        text = text.slice(0, -1);
+                        connect.sendText(text);
+                    }
+                }
+            })
+        } else if (receivedMsg[0] == "FindCourierPhoneAndName") {
+            connection.query("select * from courier where Id=?", receivedMsg[1], (err, result) => {
+                if (err) {
+                    console.log("查询出错" + err);
+                    connect.send("查询出错");
+                } else {
+                    if (result[0] == null) {
+                        console.log("未查找到电话号");
+                        connect.sendText(NOTFUND_PHONE);
+                    } else {
+                        var text = "courierPhoneAndName:" + result[0].Phone + ":" + result[0].Name;
+                        console.log("查找到电话号:" + result[0].Phone);
+                        console.log("查找到姓名:" + result[0].Name);
+                        connect.sendText(text);
                     }
                 }
             })

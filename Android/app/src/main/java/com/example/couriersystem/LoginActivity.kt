@@ -15,7 +15,6 @@ import com.example.couriersystem.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var user:String
     private lateinit var receiver: MyReceiver
 
     //    广播接收消息
@@ -25,8 +24,8 @@ class LoginActivity : AppCompatActivity() {
                 //登陆成功
                 Log.d("MyReceiver", "onReceive: LOGIN_SUCCESS")
                 binding.warning.visibility= View.INVISIBLE
-                Log.d("TAG", user)
-                if(user=="courier"){
+                Log.d("TAG", User.u)
+                if(User.u=="courier"){
                     //跳转快递员操作界面
                     val courierintent=Intent(this@LoginActivity,CourierOperateActivity::class.java)
                     startActivity(courierintent)
@@ -50,7 +49,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding= ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        user= intent.getStringExtra("user").toString()
         // 注册广播
         val filter = IntentFilter().apply {
             addAction("com.example.couriersystem.LOGIN_SUCCESS")
@@ -64,7 +62,6 @@ class LoginActivity : AppCompatActivity() {
         }
         binding.toEnroll.setOnClickListener {
             val intent=Intent(this,EnrollActivity::class.java)
-            intent.putExtra("user",user)
             startActivity(intent)
         }
         // 密码可视功能
@@ -82,7 +79,7 @@ class LoginActivity : AppCompatActivity() {
         //点击确认
         binding.confirm.setOnClickListener {
             //查询账号对应密码
-            Websocket.send(user+"FindPwdById:"+binding.userId.text.toString()+":"+binding.userPwd.text.toString())
+            Websocket.send(User.u+"FindPwdById:"+binding.userId.text.toString()+":"+binding.userPwd.text.toString())
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.couriersystem
 
 import android.content.Intent
+import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -48,8 +49,20 @@ object Websocket {
                     val intent = Intent("com.example.couriersystem.ADDORDER_SUCCESS")
                     MyApplication.getInstance().getContext().sendBroadcast(intent)
                 } else if(text==Msg.ORDERID_EXISTED){
-                    println("添加成功")
+                    println("订单编号已经存在")
                     val intent = Intent("com.example.couriersystem.ORDERID_EXISTED")
+                    MyApplication.getInstance().getContext().sendBroadcast(intent)
+                } else if(text==Msg.COURIER_GET_ORDERS_FAIL){
+                    println("获取快递员订单失败")
+                    val intent = Intent("com.example.couriersystem.COURIER_GET_ORDERS_FAIL")
+                    MyApplication.getInstance().getContext().sendBroadcast(intent)
+                }  else if(text==Msg.ADDRESSEE_GET_ORDERS_FAIL){
+                    println("获取收件人订单失败")
+                    val intent = Intent("com.example.couriersystem.ADDRESSEE_GET_ORDERS_FAIL")
+                    MyApplication.getInstance().getContext().sendBroadcast(intent)
+                }  else if(text==Msg.NOTFUND_PHONEANDNAME){
+                    println("获取快递员电话号和姓名失败")
+                    val intent = Intent("com.example.couriersystem.NOTFUND_PHONEANDNAME")
                     MyApplication.getInstance().getContext().sendBroadcast(intent)
                 } else if("Addressee:" in text){
                     val message=text.split(":")
@@ -63,7 +76,34 @@ object Websocket {
                     Courier.Name=message[2]
                     Courier.Phone=message[3]
                     println("快递员信息获取成功")
-                } else{
+                } else if("courierOrders" in text){
+                    OrderList.clear()
+                    val orders=text.split("&")
+                    for(i in 1..orders.size-1){
+                        val msg=orders[i].split(":")
+                        val o=EachOrder(msg[0],msg[1],msg[2],msg[3],msg[4],msg[5])
+                        Log.d(TAG, "Get one Order")
+                        OrderList.add(o)
+                    }
+                    val intent = Intent("com.example.couriersystem.COURIER_GET_ORDERS_SUCCESS")
+                    MyApplication.getInstance().getContext().sendBroadcast(intent)
+                } else if("addresseeOrders" in text){
+                    OrderList.clear()
+                    val orders=text.split("&")
+                    for(i in 1..orders.size-1){
+                        val msg=orders[i].split(":")
+                        val o=EachOrder(msg[0],msg[1],msg[2],msg[3],msg[4],msg[5])
+                        Log.d(TAG, "Get one Order")
+                        OrderList.add(o)
+                    }
+                    val intent = Intent("com.example.couriersystem.ADDRESSEE_GET_ORDERS_SUCCESS")
+                    MyApplication.getInstance().getContext().sendBroadcast(intent)
+                } else if("courierPhoneAndName" in text){
+                    Phone.p=text.split(":")[1]
+                    Name.n=text.split(":")[2]
+                    val intent = Intent("com.example.couriersystem.FUND_PHONEANDNAME")
+                    MyApplication.getInstance().getContext().sendBroadcast(intent)
+                }else{
                     println("$text")
                 }
             }
