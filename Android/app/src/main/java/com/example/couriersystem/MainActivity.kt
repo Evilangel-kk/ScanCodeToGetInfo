@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Websocket.connect("https://f6e9146.r15.vip.cpolar.cn")
+        Websocket.connect("https://6e4d66d4.r8.vip.cpolar.cn")
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         var intent= Intent(this,LoginActivity::class.java)
@@ -29,6 +29,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         Websocket.close()
+        if(User.u=="courier"){
+            Websocket.send("COURIER_LEAVE:"+Courier.Id)
+        }else{
+            Websocket.send("ADDRESSEE_LEAVE:"+Addressee.Id)
+        }
         super.onDestroy()
     }
 }
