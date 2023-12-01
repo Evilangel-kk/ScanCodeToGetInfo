@@ -2,6 +2,7 @@ package com.example.couriersystem
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.couriersystem.databinding.ActivityMainBinding
@@ -13,7 +14,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Websocket.connect("https://6e4d66d4.r8.vip.cpolar.cn")
+        Websocket.connect("https://2004adf.r16.vip.cpolar.cn")
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         var intent= Intent(this,LoginActivity::class.java)
@@ -28,12 +29,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        Websocket.close()
+        Log.d("MainActivity", "onDestroy: 退出程序")
         if(User.u=="courier"){
             Websocket.send("COURIER_LEAVE:"+Courier.Id)
-        }else{
+        }else if(User.u=="addressee"){
             Websocket.send("ADDRESSEE_LEAVE:"+Addressee.Id)
         }
+        Websocket.close()
         super.onDestroy()
     }
 }

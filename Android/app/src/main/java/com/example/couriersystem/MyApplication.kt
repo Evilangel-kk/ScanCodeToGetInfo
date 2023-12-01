@@ -20,4 +20,5 @@ class MyApplication : Application() {
     fun getContext(): Context {
         return applicationContext
     }
+
 }

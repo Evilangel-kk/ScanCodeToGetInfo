@@ -67,6 +67,7 @@ const server = ws.createServer((connect) => {
 
         // 将连接加入映射表
         clients.set(clientId, connect);
+
     }
     // text事件：接收用户请求，得到用户传输进来的数据。
     connect.on("text", (data) => {
@@ -647,7 +648,20 @@ const server = ws.createServer((connect) => {
                         connect.send("更新失败");
                     }
                 }
-            })
+            });
+            connection.query("select * from orders where Id=?", receivedMsg[1], (err, result) => {
+                if (err) {
+                    console.log("更新出错" + err);
+                    connect.send("更新出错");
+                } else {
+                    if (result[0] == null) {
+                        console.log("更新失败");
+                    } else {
+                        console.log("更新成功");
+                        generateQRCodeAndSave(result[0]);
+                    }
+                }
+            });
         } else if (receivedMsg[0] == "AssignCourier") {
             connection.query("update orders set CourierId=? where Id=?", [receivedMsg[2], receivedMsg[1]], (err, result) => {
                 if (err) {
@@ -662,7 +676,20 @@ const server = ws.createServer((connect) => {
                         connect.send("更新失败");
                     }
                 }
-            })
+            });
+            connection.query("select * from orders where Id=?", receivedMsg[1], (err, result) => {
+                if (err) {
+                    console.log("更新出错" + err);
+                    connect.send("更新出错");
+                } else {
+                    if (result[0] == null) {
+                        console.log("更新失败");
+                    } else {
+                        console.log("更新成功");
+                        generateQRCodeAndSave(result[0]);
+                    }
+                }
+            });
         } else if (receivedMsg[0] == "GetNumbers") {
             connection.query("select count(*) as num from orders", (err, result) => {
                 if (err) {
@@ -728,7 +755,7 @@ const server = ws.createServer((connect) => {
                 } else {
                     if (result[0] == null) {
                         console.log("更新状态成功");
-                        connect.sendText("UPDATE_STATE");
+                        sendToClient("ManagerService", "UPDATE_STATE");
                     }
                 }
             })
@@ -740,10 +767,16 @@ const server = ws.createServer((connect) => {
                 } else {
                     if (result[0] == null) {
                         console.log("更新状态成功");
-                        connect.sendText("UPDATE_STATE");
+                        sendToClient("ManagerService", "UPDATE_STATE");
                     }
                 }
             })
+        } else if (receivedMsg[0] == "GetImage") {
+            // 读取图片文件
+            const imgData = fs.readFileSync(`../CodeImg/${receivedMsg[1]}.png`);
+
+            // 发送图片数据给客户端
+            connect.send(imgData);
         }
     });
 
@@ -785,7 +818,7 @@ function generateQRCodeAndSave(order) {
     );
 }
 
-// connection.query("select * from orders", (err, result) => {
+// connection.query("select * from orders where CourierId != '' or CourierId is not NULL", (err, result) => {
 //     var i = 0;
 //     while (result[i]) {
 //         console.log(result[i]);

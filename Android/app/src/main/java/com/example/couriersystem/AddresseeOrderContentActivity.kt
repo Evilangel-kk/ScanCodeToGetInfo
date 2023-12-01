@@ -53,7 +53,7 @@ class AddresseeOrderContentActivity : AppCompatActivity() {
         Log.d("AddresseeOrderContentActivity", "addressee")
         binding.orderId.text=order.Id
         binding.orderLocation.text=order.Location
-        if(order.CourierId!=""){
+        if(order.CourierId!=""&&order.CourierId!="null"){
             Websocket.send("FindCourierPhoneAndName:"+order.CourierId)
         }else{
             binding.courierName.text="系统还没来得及为您分配快递员"

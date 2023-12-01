@@ -26,7 +26,7 @@
             <el-table
                 :data="list"
                 stripe
-                height="550"
+                height="570"
                 style="width: 100%">
                 <el-table-column
                 prop="id"

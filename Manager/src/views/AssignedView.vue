@@ -27,7 +27,7 @@
             <el-table
                 :data="list"
                 stripe
-                height="550"
+                height="570"
                 style="width: 100%">
                 <el-table-column
                 prop="id"
@@ -51,6 +51,9 @@
                         <el-button
                         type="primary"
                         @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button
+                        type="primary"
+                        @click="handleCode(scope.$index, scope.row)">查码</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -70,6 +73,14 @@
                 <el-button type="primary" @click="changeConfirm()">确 定</el-button>
             </div>
         </el-dialog>
+
+        <el-dialog title="订单二维码" v-model="dialogCodeImgVisible">
+            <el-form>
+                <div style="display:flex;align-items: center;justify-content: center;">
+                    <img :src="ImageUrl" alt="订单二维码">
+                </div>
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 
@@ -82,6 +93,7 @@ import SocketService from '../components/websocket'
                 socketServe: SocketService.Instance,
                 keyword:null,
                 list:[],
+                ImageUrl:null,
                 formDataChange:{
                     id:"",
                     location:"",
@@ -89,6 +101,7 @@ import SocketService from '../components/websocket'
                     courier:""
                 },
                 dialogFormChangeVisible:false,
+                dialogCodeImgVisible:false,
             }
         },
         mounted(){
@@ -99,30 +112,39 @@ import SocketService from '../components/websocket'
         },
         methods:{
             getSocketData(res){
+                console.log(res.data);
                 console.log(res.detail.data);
-                if(res.detail.data.includes("FUND_ASSGINED_ORDER")){
-                    var msg=res.detail.data.split("&");
-                    console.log(msg.length);
-                    for(var i=1;i<msg.length;i++){
-                        var m=msg[i].split(":");
-                        var item={
-                            "id":m[0],
-                            "location":m[1],
-                            "addressee":m[2],
-                            "courier":m[3],
+                if(res.detail.data instanceof Blob){
+                    console.log("Blob类型");
+                    // 将接收到的二进制数据转换成Blob对象
+                    const imgBlob = new Blob([res.detail.data], { type: 'image/jpeg' });
+                    // 将图片数据显示在img标签中
+                    this.ImageUrl = URL.createObjectURL(imgBlob);
+                }else{
+                    if(res.detail.data.includes("FUND_ASSGINED_ORDER")){
+                        var msg=res.detail.data.split("&");
+                        console.log(msg.length);
+                        for(var i=1;i<msg.length;i++){
+                            var m=msg[i].split(":");
+                            var item={
+                                "id":m[0],
+                                "location":m[1],
+                                "addressee":m[2],
+                                "courier":m[3],
+                            }
+                            this.list.push(item);
                         }
-                        this.list.push(item);
+                        console.table(this.list);
+                    }else if(res.detail.data.includes("NOTFUND_ASSGINED_ORDER")){
+                        //未查找到订单
+                    }else if(res.detail.data=="UPDATE_ORDER_SUCCESS"){
+                        this.$message({
+                            message: '修改成功',
+                            type: 'success'
+                        });
+                        this.dialogFormChangeVisible=false;
+                        this.searchAssignedOrderByKeyword()
                     }
-                    console.table(this.list);
-                }else if(res.detail.data.includes("NOTFUND_ASSGINED_ORDER")){
-                    //未查找到订单
-                }else if(res.detail.data=="UPDATE_ORDER_SUCCESS"){
-                    this.$message({
-                        message: '修改成功',
-                        type: 'success'
-                    });
-                    this.dialogFormChangeVisible=false;
-                    this.searchAssignedOrderByKeyword()
                 }
             },
             handleEdit(index,row){
@@ -130,6 +152,10 @@ import SocketService from '../components/websocket'
                 this.formDataChange.id=row.id;
                 this.formDataChange.location=row.location;
                 this.formDataChange.courier=row.courier;
+            },
+            handleCode(index,row){
+                this.socketServe.send("GetImage:"+row.id);
+                this.dialogCodeImgVisible=true;
             },
             changeConfirm(){
                 this.socketServe.send("OrderChange:"+this.formDataChange.id+":"+this.formDataChange.location+":"+this.formDataChange.courier);
