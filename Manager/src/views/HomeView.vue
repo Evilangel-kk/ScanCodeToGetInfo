@@ -17,12 +17,12 @@
 
                 <div class="message">
                     <span class="title">快递员数量</span>
-                    <span class="num">{{ numOfAddressee }}</span>
+                    <span class="num">{{ numOfCourier }}</span>
                 </div>
 
                 <div class="message">
                     <span class="title">收件人数量</span>
-                    <span class="num">{{ numOfCourier }}</span>
+                    <span class="num">{{ numOfAddressee }}</span>
                 </div>
             </div>
         </div>

@@ -11,7 +11,7 @@
             active-text-color="#ff0000"
         >
             <div id="logo" width="200px">
-                <img src="../assets/logo.png" alt id="logoPic" />
+                <img src="../assets/logo.png" alt id="logoPic" @click="ToHome()"/>
                 <h4>码上识件管理系统</h4>
             </div>
 
@@ -56,6 +56,9 @@ export default {
         },
         handleClose(key, keyPath) {
             console.log(key, keyPath);
+        },
+        ToHome(){
+            this.$router.push("/");
         },
     },
 };

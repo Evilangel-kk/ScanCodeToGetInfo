@@ -146,6 +146,7 @@ import SocketService from '../components/websocket'
             getSocketData(res){
                 console.log(res.detail.data);
                 if(res.detail.data.includes("FUND_COURIER")){
+                    this.list=[];
                     var msg=res.detail.data.split("&");
                     for(var i=1;i<msg.length;i++){
                         var m=msg[i].split(":");
@@ -172,7 +173,7 @@ import SocketService from '../components/websocket'
                     });
                     this.dialogFormVisible=false;
                     this.list=[];
-                    this.socketServe.send("SearchCourier:"+this.keyword);
+                    this.searchByKeyword();
                 }else if(res.detail.data=="UPDATE_SUCCESS"){
                     this.$message({
                         message: '修改成功',
@@ -180,16 +181,20 @@ import SocketService from '../components/websocket'
                     });
                     this.dialogFormChangeVisible=false;
                     this.list=[];
-                    this.socketServe.send("SearchCourier:"+this.keyword);
+                    this.searchByKeyword();
                 }else if(res.detail.data=="DELETE_COURIER_SUCCESS"){
                     this.$message({
                         message: '删除成功',
                         type: 'success'
                     });
                     this.list=[];
-                    this.socketServe.send("SearchCourier:"+this.keyword);
+                    this.searchByKeyword();
                 }else if(res.detail.data=="DELETE_COURIER_FAIL"){
                     this.$message.error('删除失败');
+                }else if(res.detail.data=="UPDATE_STATE"){
+                    console.log("UPDATE_STATE");
+                    this.list=[];
+                    this.searchByKeyword();
                 }
             },
             handleEdit(index,row){

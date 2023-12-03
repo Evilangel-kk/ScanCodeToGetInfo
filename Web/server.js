@@ -55,6 +55,8 @@ function sendToClient(clientId, message) {
     }
 }
 
+var num = 0;
+
 // 创建一个server
 const server = ws.createServer((connect) => {
     //每次只要有新的用户加入，就会为当前用户创建一个connect对象，同时调用一下这个回调函数。
@@ -63,11 +65,15 @@ const server = ws.createServer((connect) => {
     const UserAgent = "" + connect.headers['user-agent'];
     if (UserAgent.includes("Windows") || UserAgent.includes("Mac") || UserAgent.includes("Linux")) {
         // 生成唯一标识符
-        const clientId = "ManagerService";
+        var clientId = "ManagerService";
+        num++;
+        if (num > 1) {
+            clientId += num;
+            console.log("又一个服务台连接上来了");
+        }
 
         // 将连接加入映射表
         clients.set(clientId, connect);
-
     }
     // text事件：接收用户请求，得到用户传输进来的数据。
     connect.on("text", (data) => {
@@ -98,7 +104,7 @@ const server = ws.createServer((connect) => {
                                 } else {
                                     if (result[0] == null) {
                                         console.log("更新状态成功");
-                                        sendToClient("ManagerService", 'UPDATE_STATE');
+                                        sendToClient("ManagerService" + num, 'UPDATE_STATE');
                                     }
                                 }
                             });
@@ -132,7 +138,7 @@ const server = ws.createServer((connect) => {
                                 } else {
                                     if (result[0] == null) {
                                         console.log("更新状态成功");
-                                        sendToClient("ManagerService", 'UPDATE_STATE');
+                                        sendToClient("ManagerService" + num, 'UPDATE_STATE');
                                     }
                                 }
                             });
@@ -544,7 +550,7 @@ const server = ws.createServer((connect) => {
             });
         } else if (receivedMsg[0] == "SearchAssignedOrder") {
             if (receivedMsg[1] != "null") {
-                connection.query("select * from orders where CourierId != '' and Location like ?", [`%${receivedMsg[1]}%`], (err, result) => {
+                connection.query("select * from orders where CourierId != '' and (Location like ? or CourierId like ? or AddresseeName like ?)", [`%${receivedMsg[1]}%`, `%${receivedMsg[1]}%`, `%${receivedMsg[1]}%`], (err, result) => {
                     if (err) {
                         console.log("查询出错" + err);
                         connect.send("查询出错");
@@ -755,7 +761,7 @@ const server = ws.createServer((connect) => {
                 } else {
                     if (result[0] == null) {
                         console.log("更新状态成功");
-                        sendToClient("ManagerService", "UPDATE_STATE");
+                        sendToClient("ManagerService" + num, "UPDATE_STATE");
                     }
                 }
             })
@@ -767,7 +773,7 @@ const server = ws.createServer((connect) => {
                 } else {
                     if (result[0] == null) {
                         console.log("更新状态成功");
-                        sendToClient("ManagerService", "UPDATE_STATE");
+                        sendToClient("ManagerService" + num, "UPDATE_STATE");
                     }
                 }
             })

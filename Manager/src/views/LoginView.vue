@@ -46,6 +46,7 @@ import SocketService from '../components/websocket'
                 admin:{},
                 socketServe: SocketService.Instance,
                 show:false,
+                // store:useStore(),
             };
         },
         mounted(){
@@ -62,6 +63,8 @@ import SocketService from '../components/websocket'
                 console.log(res.detail.data);
                 if(res.detail.data=="FUND_MANAGER"){
                     this.show=false;
+                    this.$store.commit("setUserInfo",this.admin);
+                    localStorage.setItem("loginInfo",JSON.stringify(this.admin));
                     this.$router.push("/");
                 }else if(res.detail.data=="NOTFUND_MANAGER"){
                     this.show=false;

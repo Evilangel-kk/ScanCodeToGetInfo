@@ -43,6 +43,8 @@ export default {
     },
     methods: {
         ToLogin() {
+            this.$store.commit("setUserInfo",{});
+            localStorage.setItem("loginInfo",JSON.stringify({}));
             this.$router.replace({ name: "login" });
         },
         getDateAndTime() {

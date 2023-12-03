@@ -146,6 +146,7 @@ import SocketService from '../components/websocket'
             getSocketData(res){
                 console.log(res.detail.data);
                 if(res.detail.data.includes("FUND_ADDRESSEE")){
+                    this.list=[];
                     var msg=res.detail.data.split("&");
                     console.log(msg.length);
                     for(var i=1;i<msg.length;i++){
@@ -172,6 +173,7 @@ import SocketService from '../components/websocket'
                         type: 'success'
                     });
                     this.dialogFormVisible=false;
+                    this.list=[];
                     this.searchByKeyword();
                 }else if(res.detail.data=="UPDATE_SUCCESS"){
                     this.$message({
@@ -179,17 +181,20 @@ import SocketService from '../components/websocket'
                         type: 'success'
                     });
                     this.dialogFormChangeVisible=false;
+                    this.list=[];
                     this.searchByKeyword();
                 }else if(res.detail.data=="DELETE_ADDRESSEE_SUCCESS"){
                     this.$message({
                         message: '删除成功',
                         type: 'success'
                     });
+                    this.list=[];
                     this.searchByKeyword();
                 }else if(res.detail.data=="DELETE_ADDRESSEE_FAIL"){
                     this.$message.error('删除失败');
                 }else if(res.detail.data=="UPDATE_STATE"){
                     console.log("UPDATE_STATE");
+                    this.list=[];
                     this.searchByKeyword();
                 }
             },
